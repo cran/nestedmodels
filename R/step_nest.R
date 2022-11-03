@@ -127,7 +127,7 @@ prep.step_nest <- function(x, training, info = NULL) {
       tidyr::nest(data = -c(!!!rlang::syms(names))) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(nest_id = glue::glue("Nest {1:dplyr::n()}")) %>%
-      dplyr::select(-.data$data)
+      dplyr::select(-"data")
   } else {
     lookup_table <- NULL
   }
@@ -154,7 +154,7 @@ bake.step_nest <- function(object, new_data, ...) {
   }
 
   res <- dplyr::left_join(new_data, lookup_table, by = names) %>%
-    dplyr::select(-dplyr::all_of(names)) %>%
+    dplyr::select(-tidyselect::all_of(names)) %>%
     tibble::as_tibble()
 
   good_models <- purrr::discard(res$nest_id, is.na)
