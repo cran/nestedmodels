@@ -4,7 +4,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## ----setup, include = FALSE---------------------------------------------------
+## ----setup, message = FALSE---------------------------------------------------
 library(nestedmodels)
 library(tidyr)
 library(parsnip)
