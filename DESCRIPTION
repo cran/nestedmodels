@@ -1,6 +1,6 @@
 Package: nestedmodels
 Title: Tidy Modelling for Nested Data
-Version: 1.0.3
+Version: 1.0.4
 Authors@R: c(
     person("Ashby", "Thorpe", , "ashbythorpe@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3106-099X")),
@@ -28,9 +28,9 @@ Language: en-GB
 LazyData: true
 RoxygenNote: 7.2.3
 NeedsCompilation: no
-Packaged: 2023-01-04 17:09:43 UTC; ashbythorpe
+Packaged: 2023-03-11 21:28:10 UTC; ashbythorpe
 Author: Ashby Thorpe [aut, cre] (<https://orcid.org/0000-0003-3106-099X>),
   Hadley Wickham [ctb] (<https://orcid.org/0000-0003-4757-117X>)
 Maintainer: Ashby Thorpe <ashbythorpe@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-01-05 21:20:02 UTC
+Date/Publication: 2023-03-11 21:50:02 UTC

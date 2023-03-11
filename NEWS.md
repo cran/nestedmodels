@@ -1,3 +1,7 @@
+# nestedmodels 1.0.4
+
+* Fixed the prep.step_nest() method to include an ellipsis argument, to ensure consistency with the generic.
+
 # nestedmodels 1.0.3
 
 * Used expect_snapshot() to test printing (Thanks to a contribution from 
