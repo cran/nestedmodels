@@ -1,4 +1,7 @@
-test_that("workflows work", {
+test_that("workflows with nested models work", {
+  skip_if_not_installed("workflows")
+  skip_if_not_installed("hardhat")
+  
   model <- parsnip::linear_reg() %>%
     nested()
 
@@ -15,6 +18,7 @@ test_that("workflows work", {
     nrow(predict(fit, example_nested_data)),
     nrow(example_nested_data)
   )
+  
   expect_equal(
     nrow(predict(fit, example_nested_data)),
     nrow(example_nested_data)
@@ -23,7 +27,7 @@ test_that("workflows work", {
   baked_data <- hardhat::extract_recipe(fit) %>%
     recipes::bake(example_nested_data)
 
-  baked_data$nest_id <- NULL
+  baked_data$.nest_id <- NULL
 
   x <- baked_data[, names(baked_data) != "z"]
   y <- baked_data$z
@@ -33,7 +37,9 @@ test_that("workflows work", {
 
 test_that("Nested models can be tuned", {
   skip_on_cran() # Long test
+  skip_if_not_installed("withr")
   skip_if_not_installed("glmnet")
+  skip_if_not_installed("workflows")
   skip_if_not_installed("tune")
   withr::local_options(warnPartialMatchArgs = FALSE)
 

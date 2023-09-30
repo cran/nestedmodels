@@ -11,7 +11,7 @@ Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repost
 [![CRAN
 status](https://www.r-pkg.org/badges/version/nestedmodels)](https://CRAN.R-project.org/package=nestedmodels)
 [![Codecov test
-coverage](https://codecov.io/gh/ashbythorpe/nestedmodels/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ashbythorpe/nestedmodels?branch=master)
+coverage](https://codecov.io/gh/ashbythorpe/nestedmodels/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ashbythorpe/nestedmodels?branch=main)
 <!-- badges: end -->
 
 The goal of nestedmodels is to allow the modelling of nested data. Some
@@ -93,17 +93,17 @@ predict(fit, data_tst)
 #> # A tibble: 260 × 1
 #>    .pred
 #>    <dbl>
-#>  1  29.3
-#>  2  14.9
-#>  3  17.9
-#>  4  51.5
-#>  5  36.4
-#>  6  42.4
-#>  7  38.3
-#>  8  20.2
-#>  9  46.0
-#> 10  38.7
-#> # … with 250 more rows
+#>  1  35.0
+#>  2  27.7
+#>  3  35.0
+#>  4  39.4
+#>  5  30.4
+#>  6  29.5
+#>  7  33.8
+#>  8  33.1
+#>  9  26.3
+#> 10  18.9
+#> # ℹ 250 more rows
 ```
 
 If you don’t want to nest your data manually, use `step_nest()` inside a
@@ -123,17 +123,17 @@ predict(wf_fit, data_tst)
 #> # A tibble: 260 × 1
 #>    .pred
 #>    <dbl>
-#>  1  29.3
-#>  2  14.9
-#>  3  17.9
-#>  4  51.5
-#>  5  36.4
-#>  6  42.4
-#>  7  38.3
-#>  8  20.2
-#>  9  46.0
-#> 10  38.7
-#> # … with 250 more rows
+#>  1  35.0
+#>  2  27.7
+#>  3  35.0
+#>  4  39.4
+#>  5  30.4
+#>  6  29.5
+#>  7  33.8
+#>  8  33.1
+#>  9  26.3
+#> 10  18.9
+#> # ℹ 250 more rows
 ```
 
 Please note that the nestedmodels project is released with a

@@ -23,19 +23,25 @@
 #'
 #' @seealso [parsnip::fit.model_spec()] [parsnip::model_fit]
 #'
-#' @examples
-#' data <- dplyr::filter(example_nested_data, id %in% 11:20)
+#' @examplesIf rlang::is_installed("workflows")
+#' 
+#' library(dplyr)
+#' library(parsnip)
+#' library(recipes)
+#' library(workflows)
+#' 
+#' data <- filter(example_nested_data, id %in% 11:20)
 #'
-#' model <- parsnip::linear_reg() %>%
-#'   parsnip::set_engine("lm") %>%
+#' model <- linear_reg() %>%
+#'   set_engine("lm") %>%
 #'   nested()
 #'
-#' recipe <- recipes::recipe(data, z ~ x + y + id) %>%
+#' recipe <- recipe(data, z ~ x + y + id) %>%
 #'   step_nest(id)
 #'
-#' wf <- workflows::workflow() %>%
-#'   workflows::add_recipe(recipe) %>%
-#'   workflows::add_model(model)
+#' wf <- workflow() %>%
+#'   add_recipe(recipe) %>%
+#'   add_model(model)
 #'
 #' fit(wf, data)
 #'
@@ -53,34 +59,44 @@ fit_xy.nested_model <- function(object, x, y, case_weights = NULL,
   }
 
   model <- extract_inner_model(object)
-
+  parallel <- object$eng_args$allow_par
+  pkgs <- object$eng_args$pkgs
+  
   if (!is.null(object$args)) {
     model <- pass_down_args(model, object)
   }
 
-  if (!"nest_id" %in% colnames(x)) {
+  if (!".nest_id" %in% colnames(x)) {
     cli::cli_abort(c(
-      "{.arg x} does not contain a \"nest_id\" column.",
+      "{.arg x} does not contain a \".nest_id\" column.",
       "i" = "Try using {.fun step_nest}."
     ))
   }
 
-  y$nest_id <- x$nest_id
+  y$.nest_id <- x$.nest_id
 
   nested_colname <- get_name(".data", c(colnames(x), colnames(y)))
 
   nested_x <- x %>%
-    tidyr::nest(!!nested_colname := -"nest_id") %>%
+    tidyr::nest(!!nested_colname := -".nest_id") %>%
     dplyr::ungroup()
 
   nested_y <- y %>%
-    tidyr::nest(!!nested_colname := -"nest_id") %>%
+    tidyr::nest(!!nested_colname := -".nest_id") %>%
     dplyr::ungroup()
-
-  fits <- purrr::map2(
-    nested_x[[nested_colname]], nested_y[[nested_colname]], safe_fit_xy,
-    object = model, case_weights = case_weights, control = control, ...
-  )
+  
+  `%op%` <- get_operator(parallel, model)
+  
+  rlang::local_options(doFuture.rng.onMisuse = "ignore")
+  
+  fits <- foreach::foreach(
+    x = nested_x[[nested_colname]],
+    y = nested_y[[nested_colname]],
+    .export = "safe_fit_xy",
+    .packages = unique(c(pkgs, generics::required_pkgs(model)))
+  ) %op% {
+    safe_fit_xy(model, x, y, case_weights = case_weights, control = control, ...)
+  }
 
   cols <- c(
     colnames(purrr::compact(nested_x[[nested_colname]])[[1]]),

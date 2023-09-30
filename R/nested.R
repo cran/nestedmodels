@@ -4,22 +4,30 @@
 #' `is_nested()` checks if a model or workflow is nested.
 #'
 #' @param x A model specification or workflow.
+#' @param allow_par A logical to allow parallel processing over nests during
+#'   the fitting process (if a parallel backend is registered).
+#' @param pkgs An optional character string of R package names that should be 
+#'   loaded (by namespace) during parallel processing.
 #' @param ... Not currently used.
 #'
 #' @return A nested model object, or a workflow containing a nested model.
 #' For `is_nested()`, a logical vector of length 1.
 #'
-#' @examples
-#' model <- parsnip::linear_reg() %>%
-#'   parsnip::set_engine("lm") %>%
+#' @examplesIf rlang::is_installed("workflows")
+#' 
+#' library(parsnip)
+#' library(workflows)
+#' 
+#' model <- linear_reg() %>%
+#'   set_engine("lm") %>%
 #'   nested()
 #'
 #' model
 #'
 #' is_nested(model)
 #'
-#' wf <- workflows::workflow() %>%
-#'   workflows::add_model(model)
+#' wf <- workflow() %>%
+#'   add_model(model)
 #'
 #' is_nested(wf)
 #'
@@ -38,20 +46,20 @@ nested.default <- function(x, ...) {
 
 #' @rdname nested
 #' @export
-nested.model_spec <- function(x, ...) {
+nested.model_spec <- function(x, allow_par = FALSE, pkgs = NULL, ...) {
   mode <- x$mode
-  nested_model(mode, x)
+  nested_model(mode, x, allow_par = allow_par, pkgs = NULL)
 }
 
 #' @rdname nested
 #' @export
-nested.nested_model <- function(x, ...) x
+nested.nested_model <- function(x, allow_par = FALSE, pkgs = NULL, ...) x
 
 #' @rdname nested
 #' @export
-nested.workflow <- function(x, ...) {
+nested.workflow <- function(x, allow_par = FALSE, pkgs = NULL, ...) {
   x$fit$actions$model$spec <-
-    nested(x$fit$actions$model$spec)
+    nested(x$fit$actions$model$spec, allow_par = allow_par, pkgs = NULL, ...)
   x
 }
 
@@ -85,8 +93,11 @@ is_nested.workflow <- function(x, ...) {
 #' @returns A `model_spec` object
 #'
 #' @examples
-#' model <- parsnip::linear_reg() %>%
-#'   parsnip::set_engine("lm") %>%
+#' 
+#' library(parsnip)
+#' 
+#' model <- linear_reg() %>%
+#'   set_engine("lm") %>%
 #'   nested()
 #'
 #' extract_inner_model(model)
